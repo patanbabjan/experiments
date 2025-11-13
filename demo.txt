@@ -1,0 +1,219 @@
+1.
+export default function App(){
+  return(
+    <div style={{padding:20}}>
+      <h1>Hello React!</h1>
+      <p>Setup successful</p>
+      </div>
+    );
+}
+
+2. index.js
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from"./App";
+createRoot(document.getElementById("root")).render(
+  <BrowserRouter><App/></BrowserRouter>
+);
+App.js
+import React from "react";
+import { Routes, Route, Link } from "react-router-dom";
+const Home = () =><main><h1>Home</h1> <p> Welcome to my react-app</p></main>;
+const About = () =><main><h1>About</h1> <p> This is the about page</p></main>;
+const Contact = () =><main><h1>Contact</h1> <p> Email:myemail@mydomain.com</p></main>;
+export default function App(){
+  return(
+    <div style={{padding:20,fontFamily:"Arial,Helvetica,sans-serif"}}>
+      <nav style={{bottomMargin:12}}>
+      <Link to="/">Home</Link>{" | "}
+      <Link to="/about">About</Link>{" | "}
+      <Link to="/contact">Contact</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+        <Route path="/about" element={<About/>}/>
+        <Route path="/contact" element={<Contact/>}/>
+      </Routes>
+      </div>
+
+  );
+}
+
+
+3.RegistrationForm.js
+import React,{ useState } from "react";
+export default function RegistrationForm(){
+    const[form,setForm]=useState({name:"",email:""});
+    function handleChange(e){
+        const{name,value}=e.target;
+        setForm({...form,[name]:value});
+    }
+    function handleSubmit(e){
+        e.preventDefault();
+        alert(`Name:${form.name}\n Email:${form.email}`);
+    }
+    return(
+        <div style={{padding:20}}>
+            <h2>Registration Form</h2>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Name:{""}
+                    <input type="text"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    placeholder="Enter your name" required/>
+                </label>
+                <br/><br/>
+                <label>
+                    Email:{""}
+                    <input type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="Enter your email" required/>
+                </label>
+                <br/><br/>
+                <button type="submit">submit</button>
+                </form>
+        </div>
+    );
+
+}
+
+App.js
+import React from "react";
+import RegistrationForm from "./components/RegistrationForm";
+export default function App(){
+  return(
+    <div>
+      <h2>RegistrationForm</h2>
+      <RegistrationForm/>
+    </div>
+  );
+}
+
+4.counterSlice.js:
+import { createSlice } from "@reduxjs/toolkit";
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => { state.value += 1; },
+    decrement: (state) => { state.value -= 1; },
+    reset: (state) => { state.value = 0; }
+  }
+});
+
+export const { increment, decrement, reset } = counterSlice.actions;
+export default counterSlice.reducer;
+store.js:
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "./counterSlice";
+
+export const store = configureStore({
+  reducer: {
+    counter: counterReducer
+  }
+});
+index.js:
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+Counter.js:
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { increment, decrement, reset } from "../store/counterSlice";
+
+export default function Counter() {
+  const value = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h2>Redux Counter Example</h2>
+      <h3>Counter Value: {value}</h3>
+      <button onClick={() => dispatch(increment())}>+1</button>{" "}
+      <button onClick={() => dispatch(decrement())}>-1</button>{" "}
+      <button onClick={() => dispatch(reset())}>Reset</button>
+    </div>
+  );
+}
+App.js:
+import React from "react";
+import Counter from "./components/Counter";
+
+export default function App() {
+  return (
+    <div>
+      <h1>React + Redux Counter Application</h1>
+      <Counter />
+    </div>
+  );
+}
+
+
+5.import { useEffect, useState } from "react";
+import axios from "axios";
+
+export default function App() {
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    axios("https://jsonplaceholder.typicode.com/posts?_limit=5")
+      .then(r => setPosts(r.data));
+  }, []);
+  return (
+    <div style={{ padding: 20 }}>
+      <h1>React Axios Data Fetch Example</h1>
+      <h3>Posts</h3>
+      <ul>{posts.map(p => <li key={p.id}><b>{p.title}</b></li>)}</ul>
+    </div>
+  );
+}
+or
+5.PostsList.js:
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+export default function PostsList() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    axios.get("https://jsonplaceholder.typicode.com/posts?_limit=5")
+      .then(res => setPosts(res.data))
+      .catch(err => console.error(err));
+  }, []);
+
+  return (
+    <div>
+      <h3>Posts</h3>
+      <ul>
+        {posts.map(p => <li key={p.id}><b>{p.title}</b></li>)}
+      </ul>
+    </div>
+  );
+}
+App.js:
+import React from "react";
+import PostsList from "./components/PostsList";
+
+export default function App() {
+  return (
+    <div>
+      <h1>React Axios Data Fetch Example</h1>
+      <PostsList />
+    </div>
+  );
+}
+
