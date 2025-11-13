@@ -1,0 +1,89 @@
+4(a)
+// File: StudentDemo.java
+
+class Student {
+    String name;
+    int age;
+
+    // Method to set student details
+    void setDetails(String n, int a) {
+        name = n;
+        age = a;
+    }
+
+    // Method to display student details
+    void displayDetails() {
+        System.out.println("Name: " + name + ", Age: " + age);
+    }
+}
+
+public class StudentDemo {
+    public static void main(String[] args) {
+        // Create objects of Student class
+        Student s1 = new Student();
+        Student s2 = new Student();
+
+        // Set and display details
+        s1.setDetails("Praneel", 22);
+        s2.setDetails("Uday", 23);
+
+        s1.displayDetails();
+        s2.displayDetails();
+    }
+}
+5(a)
+CREATE TABLE department (
+  department_id INT AUTO_INCREMENT PRIMARY KEY,
+  department_name VARCHAR(100),
+  department_head VARCHAR(100)
+);
+CREATE TABLE student (
+  student_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  dob DATE,
+  department_id INT,
+  email VARCHAR(100),
+  FOREIGN KEY (department_id) REFERENCES department(department_id)
+);
+CREATE TABLE course (
+  course_id INT AUTO_INCREMENT PRIMARY KEY,
+  course_name VARCHAR(100),
+  credits INT,
+  department_id INT,
+  FOREIGN KEY (department_id) REFERENCES department(department_id)
+);
+CREATE TABLE enrollment (
+  enroll_id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id INT,
+  course_id INT,
+  enrollment_date DATE,
+  grade VARCHAR(5),
+  FOREIGN KEY (student_id) REFERENCES student(student_id),
+  FOREIGN KEY (course_id) REFERENCES course(course_id)
+);
+5(b)
+INSERT INTO department (department_name, department_head) VALUES ('CSE', 'Dr. Rao');
+INSERT INTO student (name, dob, department_id, email) VALUES ('Praneel', '1982-01-14', 1, 'praneel@example.com');
+SELECT * FROM student;
+UPDATE student SET email='updated@example.com' WHERE student_id=1;
+DELETE FROM student WHERE student_id=1;
+5(c)
+
+spring.datasource.url=jdbc:mysql://localhost:3306/college
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+5(e)
+
+web: java -jar target/SpringApp-0.0.1-SNAPSHOT.jar
+git add .
+git commit -m "deploy"
+git push heroku main
+
+$ git init
+$ git config --global user.name "patanbabjan"
+$ git add .
+$ git commit -m "commit"
+$ git remote add origin https://github.com/patanbabjan/experiments.git
+$ git branch -M main
+$ git push -u origin main
